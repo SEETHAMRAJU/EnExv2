@@ -5,9 +5,9 @@ import imutils
 import numpy as np
 import argparse
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--img", type = str, required=True)
-args = parser.parse_args()
+#parser = argparse.ArgumentParser()
+#parser.add_argument("--img", type = str, required=True)
+#args = parser.parse_args()
 
 # some constants kept as default from facenet
 minsize = 20
@@ -37,12 +37,14 @@ def getFace(img):
                 resized = cv2.resize(cropped, (input_image_size,input_image_size),interpolation=cv2.INTER_AREA)
                 faces.append({'face':resized,'rect':[bb[0],bb[1],bb[2],bb[3]]})
     return faces
+cap = cv2.VideoCapture(0)
+while(True):
+    _,img = cap.read()
+    img = imutils.resize(img,width=1000)
+    faces = getFace(img)
+    for face in faces:
+        cv2.rectangle(img, (face['rect'][0], face['rect'][1]), (face['rect'][2], face['rect'][3]), (0, 255, 0), 2)
+    cv2.imshow("faces", img)
+    cv2.waitKey(10)
 
-img = cv2.imread(args.img)
-img = imutils.resize(img,width=1000)
-faces = getFace(img)
-for face in faces:
-    cv2.rectangle(img, (face['rect'][0], face['rect'][1]), (face['rect'][2], face['rect'][3]), (0, 255, 0), 2)
-cv2.imshow("faces", img)
-cv2.waitKey(0)
 cv2.destroyAllWindows()

@@ -5,11 +5,15 @@ import cv2
 import imutils
 import numpy as np
 import argparse
+import csv
+import time
+import mysql.connector
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--img", type = str, required=True)
 args = parser.parse_args()
-
+print "FACE DETECTION \n----------------------------------------------------------------"
 # some constants kept as default from facenet
 minsize = 20
 threshold = [0.6, 0.7, 0.7]
@@ -56,13 +60,52 @@ def getEmbedding(resized):
     embedding = sess.run(embeddings, feed_dict=feed_dict)
     return embedding
 
+def write_to_file(d):
+    with open('data.csv','a') as f:
+        for j in d:
+            p = [j]
+            j = p + list(d[j])
+            print len(j)
+            wrt = csv.writer(f)
+            wrt.writerows([j])
+        f.close
+    print "Finished storing"
+
+
+def store_to_database(myId,name,Roll,mail):
+    mydb = mysql.connector.connect(host='localhost',user="byte-rider",passwd='23155878',database='reFace')     
+    mycursor = mydb.cursor()
+    val = (myId,name,Roll,mail)
+    mycursor.execute("INSERT INTO perData(myID,Name,Roll,email) VALUES(%s,%s,%s,%s)",val)
+    print "Came here"
+    mydb.commit()
+    mydb.close()
+    print 'Data Stored Successfully'
+
+######################################################################################
+
+
+
+
 img = cv2.imread(args.img)
 img = imutils.resize(img,width=1000)
 faces = getFace(img)
-#myFile = open("txt.csv","w")
+d = {}
 for face in faces:
-    face['embedding'].tofile('my.csv',sep=',')
-    print type(face['embedding'])  
-    #print("Embeddings = "+str(face['embedding']))
+    y = raw_input("Do you want to store (Y/N) : ")
+    if(y == 'Y' or y == 'y'):
+        na = raw_input("Please give your name : ")
+        iD = raw_input("Please give your Roll Number : ")
+        mal = raw_input("Please provide your email ID : ")
+        myId = int(time.time())
+        #also create a user in the database
+        d[myId] = face['embedding'][0]
+        store_to_database(myId,na,iD,mal)
+        print iD,d[myId]
+write_to_file(d)
+   
+
+
+
 cv2.waitKey(0)
 cv2.destroyAllWindows()
