@@ -73,7 +73,7 @@ def compare2face(img2):
         face1 = face1.astype(np.float)
         if face2:
             dist = np.sqrt(np.sum(np.square(np.subtract(face1, face2[0]['embedding']))))
-            print dist,face[0]
+            #print dist,threshold
             if(dist <= threshold and dist < prev):
                 prev = dist
                 ans = face[0]
@@ -83,7 +83,7 @@ def compare2face(img2):
 def send_mail(name,flag):
     message = ""
     if(flag == 'x' or flag == 'X'):
-        message += "Dear "+name[0]+"\nThis is a conformation mail for your Entry @ "+str(datetime.datetime.now())+"\n\nregards,"
+        message += "Dear "+name[0]+"\nThis is a conformation mail for your Exit @ "+str(datetime.datetime.now())+"\n\nregards,"
     else:
         message += "Dear "+name[0]+"\nThis is a conformation mail for your Exit @ "+str(datetime.datetime.now())+"\n\nRegards" 
     s = smtplib.SMTP('smtp.gmail.com',587)
@@ -94,7 +94,6 @@ def send_mail(name,flag):
 
 
 def get_mapping():
-
     temp = {}
     mydb = mysql.connector.connect(
             host = 'localhost',
@@ -144,19 +143,24 @@ names = get_mapping()
 print names.keys()
 answer = ""
 cap = cv2.VideoCapture(0)
-i = 0
+j = 0
 n = 0
-while(n<10):
+lst = []
+for i in tqdm(range(0,50)):
     _,img2 = cap.read()
     
     ans = compare2face(img2)
-    if(ans != -100):
-        i += 1
+    lst.append(ans)
+    if(ans == -100):
+        j += 1
     n += 1
-    cv2.imshow("",img2)
-    cv2.waitKey(5)
-if((i+0.0)/n < 0.5):
-    print "Sorry"
+poten = max(lst,key=lst.count)
+cnt = 0
+for i in lst:
+    if(poten == i):
+        cnt += 1
+if((j+0.0)/n > 0.70):
+    print "Sorry\n Unidentified !!"
 else:
     ansi = int(ans)
     print "Welcome "+ names[ansi][0] + " !!"
