@@ -10,20 +10,22 @@
           <h2>User entry exit details</h2>
           <table border = 1>
         <thead>
+          <td>Name</td>
+          <td>Roll Number</td>
+          <td>Date</td>
           <td>Incoming Time</td>
-           <td>Date</td>
-           <td>Name</td>
-           <td>Roll Number</td>
-           <td>Outgoing Time</td>
+          <td>Outgoing Time</td>
+          <td>Duration</td>
         </thead>
 
         {% for row in rows %}
            <tr>
-             <td> {{ row["InC"]}}</td>
+             <td>{{row["name"]}}</td>
+             <td>{{row["roll"]}}</td>
              <td>{{row["date"]}}</td>
-              <td>{{row["name"]}}</td>
-              <td>{{row["roll"]}}</td>
+              <td> {{ row["InC"]}}</td>
               <td>{{row["OutG"]}}</td>
+              <td>{{row["duration"]}}</td>
            </tr>
         {% endfor %}
      </table>

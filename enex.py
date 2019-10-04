@@ -60,7 +60,7 @@ def getEmbedding(resized):
 #My function
 def compare2face(img2):
     threshold = 1.1
-    face2 = getFace(img2)
+    face2 = getFace(img2)[0]['embedding'][0]
     with open('data.csv','r') as f:
         fr = csv.reader(f)
         d = list(fr)
@@ -71,8 +71,7 @@ def compare2face(img2):
         face1 = np.asarray(face[1:])
         face1 = face1.astype(np.float)
         if(len(face1) == len(face2)):
-            if face2:
-                dist = np.sqrt(np.sum(np.square(np.subtract(face1, face2[0]['embedding']))))
+                dist = np.sqrt(np.sum(np.square(np.subtract(face1, face2))))
                 if(dist <= threshold and dist < prev):
                     prev = dist
                     ans = face[0]
@@ -123,7 +122,6 @@ def updateDb(ans,flag):
     now = str(now)
     mycursor = mydb.cursor()
     if(flag=='N' or flag=='n'):
-
         val = (mycursor.rowcount+1,ans,now)
         mycursor.execute("INSERT INTO entryExit (Serial,ID,InC) VALUES (%s,%s,%s)",val)
         mydb.commit()

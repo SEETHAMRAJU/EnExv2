@@ -1,21 +1,32 @@
 from flask import Flask, redirect, url_for, request, render_template
 import mysql.connector
+from datetime import datetime
 from werkzeug import secure_filename
 import cv2
 
 from add import *
 
 app = Flask(__name__)
+def get_duration(t,g):
+        ans = ""
+        g = g[1]
+        t = t[1]
+        t = t.split(':')
+        g = g.split(':')
+        ans = "{}:{}:{}".format(float(t[0])-float(g[0]), float(t[1]) - float(g[1]),float(t[2])-float(g[2]))
+        return ans
 def plumb_entry(data):
     p = []
     for i in data:
         temp = {}
         g = i[0].split(' ')
+        t = i[1].split(' ')
         temp['InC'] = g[1]
-        temp['OutG'] = i[1]
+        temp['OutG'] = t[1]
         temp['roll'] = i[3]
         temp['date'] = g[0]
         temp['name'] = i[2]
+        temp['duration'] = get_duration(t,g)
         p.append(temp)
     return p
 def plumb_person(data):
