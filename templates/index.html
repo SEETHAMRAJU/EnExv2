@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <a href="\" style="float: right;" title="logout from this account">Logout</a>
+  <h1>Welcome Admin</h1>
+  <a href="/user_data" style="float : right;" title="Details of all the users">user info</a>
+</head>
+  <body>
+      <p>
+          <h2>User entry exit details</h2>
+          <table border = 1>
+        <thead>
+          <td>Incoming Time</td>
+           <td>Date</td>
+           <td>Name</td>
+           <td>Roll Number</td>
+           <td>Outgoing Time</td>
+        </thead>
+
+        {% for row in rows %}
+           <tr>
+             <td> {{ row["InC"]}}</td>
+             <td>{{row["date"]}}</td>
+              <td>{{row["name"]}}</td>
+              <td>{{row["roll"]}}</td>
+              <td>{{row["OutG"]}}</td>
+           </tr>
+        {% endfor %}
+     </table>
+      <p>
+  <body>
+</html>

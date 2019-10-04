@@ -50,8 +50,6 @@ def getFace(img):
                 resized = cv2.resize(cropped, (input_image_size,input_image_size),interpolation=cv2.INTER_CUBIC)
                 prewhitened = facenet.prewhiten(resized)
                 faces.append({'face':resized,'rect':[bb[0],bb[1],bb[2],bb[3]],'embedding':getEmbedding(prewhitened)})
-        #cv2.imshow("",img)
-        #cv2.waitKey(10)
     return faces
 def getEmbedding(resized):
     reshaped = resized.reshape(-1,input_image_size,input_image_size,3)
@@ -59,6 +57,7 @@ def getEmbedding(resized):
     embedding = sess.run(embeddings, feed_dict=feed_dict)
     return embedding
 
+#My function
 def compare2face(img2):
     threshold = 1.1
     face2 = getFace(img2)
@@ -67,25 +66,25 @@ def compare2face(img2):
         d = list(fr)
     prev = 1000000
     ans = -100
-    
+
     for face in d:
         face1 = np.asarray(face[1:])
         face1 = face1.astype(np.float)
-        if face2:
-            dist = np.sqrt(np.sum(np.square(np.subtract(face1, face2[0]['embedding']))))
-            #print dist,threshold
-            if(dist <= threshold and dist < prev):
-                prev = dist
-                ans = face[0]
+        if(len(face1) == len(face2)):
+            if face2:
+                dist = np.sqrt(np.sum(np.square(np.subtract(face1, face2[0]['embedding']))))
+                if(dist <= threshold and dist < prev):
+                    prev = dist
+                    ans = face[0]
     return ans
 
-    
+
 def send_mail(name,flag):
     message = ""
     if(flag == 'x' or flag == 'X'):
         message += "Dear "+name[0]+"\nThis is a conformation mail for your Exit @ "+str(datetime.datetime.now())+"\n\nregards,"
     else:
-        message += "Dear "+name[0]+"\nThis is a conformation mail for your Exit @ "+str(datetime.datetime.now())+"\n\nRegards" 
+        message += "Dear "+name[0]+"\nThis is a conformation mail for your Exit @ "+str(datetime.datetime.now())+"\n\nRegards"
     s = smtplib.SMTP('smtp.gmail.com',587)
     s.starttls()
     s.login('eabcd8235@gmail.com','04023155878')
@@ -105,9 +104,9 @@ def get_mapping():
     mycursor.execute("SELECT myId,name,email FROM perData")
     p = mycursor.fetchall()
     mydb.close()
-    
-    
-    print 'Fetching Data'    
+
+
+    print 'Fetching Data'
     for j in tqdm(p):
         temp[j[0]] = j[1:]
     return temp
@@ -132,8 +131,9 @@ def updateDb(ans,flag):
     else:
         val = (now)
         mycursor.execute("UPDATE entryExit SET OutG = '"+str(now)+"' WHERE ID = "+str(ans),val)
+        mydb.commit()
     mydb.close()
-    
+
 
 #&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
@@ -148,7 +148,7 @@ n = 0
 lst = []
 for i in tqdm(range(0,50)):
     _,img2 = cap.read()
-    
+
     ans = compare2face(img2)
     lst.append(ans)
     if(ans == -100):
@@ -167,5 +167,3 @@ else:
     flag = raw_input("Entry or Exit (N/X) : ")
     updateDb(ansi,flag)
     send_mail(names[ansi],flag)
-
-

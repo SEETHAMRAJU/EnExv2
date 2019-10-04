@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <a href="\" style="float: right;" title="logout from this account">Logout</a>
+  <h1>Welcome Admin</h1>
+  <a href="/add_user" style="float : right;" title="logout from this account">Add user</a>
+</head>
+  <body>
+      <p>
+          <h2>Information about users</h2>
+          <table border = 1>
+        <thead>
+           <td><b>ID</b></td>
+           <td><b>Name</b></td>
+           <td><b>E - mail </b></td>
+           <td><b>Roll Number</b></td>
+
+        </thead>
+
+        {% for row in rows %}
+           <tr>
+             <td> {{ row["id"]}}</td>
+             <td>{{row["name"]}}</td>
+              <td>{{row["email"]}}</td>
+              <td>{{row["roll"]}}</td>
+           </tr>
+        {% endfor %}
+     </table>
+      <p>
+  <body>
+</html>

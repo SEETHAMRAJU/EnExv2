@@ -1,11 +1,11 @@
 from flask import Flask, redirect, url_for, request, render_template
-import mysql.connector
 from werkzeug import secure_filename
+import mysql.connector
 import cv2
 
-from add import *
 
 app = Flask(__name__)
+
 def plumb_entry(data):
     p = []
     for i in data:
@@ -34,8 +34,6 @@ def plumb_person(data):
 def add_user():
     error =None
     user = {}
-    temp = {}
-    print(error)
     if(request.method=='POST'):
         user['Name'] = request.form['name']
         user['roll'] = request.form['roll']
@@ -43,14 +41,8 @@ def add_user():
         face = request.files['file']
         face.save(secure_filename(face.filename))
         img = cv2.imread(secure_filename(face.filename))
-        faces = getFace(img)
-        for face in faces:
-            user["myId"] = int(time.time())
-            temp[user["myId"]] = face['embedding'][0]
-            store_to_database(user["myId"],user["Name"],user["roll"],user['email'])
-        write_to_file(temp)
-
-        return redirect(url_for("user_data"))
+        print(img)
+        return redirect(url_for("admin"))
     return render_template("user_add.html")
 
 @app.route("/user_data")

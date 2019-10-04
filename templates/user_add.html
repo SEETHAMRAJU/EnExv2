@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <title>Admin Action </title>
+  <head><h1>Adding user to the database</h1><a style="float:right;" href="/admin">Back to home</a></head>
+  <body>
+    <form action="/add_user" method="post" enctype="multipart/form-data">
+      Name
+      <input type="text" placeholder="Full Name" name="name" value="{{ request.form.name }}" >
+      <br>
+      Roll Number :
+       <input type="text" placeholder="eg, IMT2017002" value="{{request.form.roll }}" name="roll" >
+       <br>
+       E-mail id  :
+        <input type="text" placeholder="email-id" value="{{request.form.email }}" name="email" >
+       <br>
+       Photo :
+       <input type="file" name="file" >
+
+       <br><br>
+       <br>
+      <input class="btn btn-default" type="submit" value="Add">
+      <input class="btn btn-default" type="reset" value="clear all">
+    </form>
+  </body>
+
+</html>
