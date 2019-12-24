@@ -13,3 +13,7 @@ The model for face recognition is taken form the implemetation of facematch by a
 
 Dbase reFace
 Table inComing
+
+
+This is an extension of the project by Arun Mandal Sir.
+https://github.com/arunmandal53
